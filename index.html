@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WANI | Heritage Made Personal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'serif'],
+                        sans: ['Jost', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg: #0A0A0A;
+            --surface: #141414;
+            --text: #F3E6D3;
+            --text-secondary: #BFA88C;
+            --accent: #C9A25A;
+            --border: rgba(201, 162, 90, 0.2);
+        }
+
+        /* Section Theme Variables */
+        section[data-theme="luban"] {
+            --bg: #EBD9C8;
+            --surface: #F5E9DC;
+            --text: #1A1410;
+            --text-secondary: #5E4F44;
+            --accent: #B8863B;
+            --border: rgba(184, 134, 59, 0.3);
+        }
+
+        section[data-theme="fresh"] {
+            --bg: #EFE6DA;
+            --surface: #F4EFE6;
+            --text: #1F211B;
+            --text-secondary: #5A5F4F;
+            --accent: #6B765A;
+            --border: rgba(107, 118, 90, 0.3);
+        }
+
+        section[data-theme="floral"] {
+            --bg: #F3DCCB;
+            --surface: #FAEBE2;
+            --text: #2A1714;
+            --text-secondary: #7A5550;
+            --accent: #93504F;
+            --border: rgba(147, 80, 79, 0.3);
+        }
+
+        section[data-theme="oud"] {
+            --bg: #2B1C12;
+            --surface: #1E140D;
+            --text: #F3E6D3;
+            --text-secondary: #BFA88C;
+            --accent: #C9A25A;
+            --border: rgba(201, 162, 90, 0.3);
+        }
+
+        /* Apply Theme Mapping */
+        .themed-section {
+            background-color: var(--bg);
+            color: var(--text);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        .themed-card {
+            background-color: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-top-left-radius: 6rem;
+            border-top-right-radius: 6rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .themed-btn {
+            background-color: var(--accent);
+            color: var(--bg);
+            transition: all 0.3s ease;
+        }
+        .themed-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Leaf sway animation for Fresh section */
+        @keyframes sway {
+            0%, 100% { transform: rotate(0deg) translateY(0); }
+            50% { transform: rotate(2deg) translateY(5px); }
+        }
+        .leaf-shadow {
+            animation: sway 8s ease-in-out infinite;
+        }
+
+        /* Smooth section gradient transitions */
+        .gradient-bridge {
+            height: 120px;
+            background: linear-gradient(to bottom, var(--from-bg), var(--to-bg));
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #141414; }
+        ::-webkit-scrollbar-thumb { background: #C9A25A; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-black text-[#F3E6D3] font-sans selection:bg-[#C9A25A] selection:text-black">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/90 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="font-serif text-3xl font-bold tracking-[0.25em] text-[#F3E6D3]">WANI</a>
+            
+            <div class="hidden lg:flex items-center space-x-8 text-xs tracking-[0.25em] uppercase font-medium text-[#BFA88C]">
+                <a href="#luban" class="hover:text-[#C9A25A] transition-colors">Luban</a>
+                <a href="#fresh" class="hover:text-[#6B765A] transition-colors">Fresh</a>
+                <a href="#floral" class="hover:text-[#93504F] transition-colors">Fruity & Floral</a>
+                <a href="#oud" class="hover:text-[#C9A25A] transition-colors">Oud</a>
+                <a href="#craft" class="hover:text-[#C9A25A] transition-colors">Craftsmanship</a>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <button onclick="toggleCartDrawer()" class="relative hover:text-[#C9A25A] transition-colors flex items-center gap-2 text-xs uppercase tracking-widest font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span class="hidden sm:inline">Bag</span>
+                    <span id="cart-badge" class="bg-[#C9A25A] text-black text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative min-h-screen flex items-center justify-center pt-20 px-6 overflow-hidden bg-[#140D08]">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#2B1C12] via-[#140D08] to-black -z-10"></div>
+        <div class="absolute w-[600px] h-[600px] bg-[#C9A25A]/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="max-w-4xl mx-auto text-center z-10">
+            <span class="text-[#C9A25A] tracking-[0.4em] uppercase text-xs md:text-sm font-semibold mb-6 block">Heritage Made Personal</span>
+            <h1 class="font-serif text-5xl sm:text-7xl md:text-8xl font-bold tracking-wider text-[#F3E6D3] mb-6 leading-tight">
+                Immersive <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D8C3AB] via-[#C9A25A] to-[#B8863B]">Rituals</span>
+            </h1>
+            <p class="text-[#BFA88C] text-sm md:text-base max-w-xl mx-auto mb-10 font-light leading-relaxed">
+                A contemporary olfactory journey through Omani frankincense, sunlit citrus, blooming petals, and deep bronze oud wood.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#luban" class="w-full sm:w-auto px-8 py-4 bg-[#C9A25A] text-black font-semibold tracking-[0.2em] uppercase text-xs hover:bg-[#b58f4a] transition-all rounded-sm shadow-xl">
+                    Explore Collections
+                </a>
+                <a href="#craft" class="w-full sm:w-auto px-8 py-4 border border-[#C9A25A]/40 text-[#F3E6D3] font-semibold tracking-[0.2em] uppercase text-xs hover:border-[#C9A25A] hover:text-[#C9A25A] transition-all rounded-sm">
+                    Our Craft
+                </a>
+            </div>
+        </div>
+    </header>
+
+
+    <section id="luban" data-theme="luban" class="themed-section py-28 px-6 relative overflow-hidden">
+        <!-- Background textures & sunlight beams -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[#EBD9C8] via-[#E4D1BF] to-[#D9BC9F] pointer-events-none opacity-90"></div>
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-[rgba(255,228,180,0.35)] rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20">
+                <span class="text-[var(--accent)] tracking-[0.3em] uppercase text-xs font-semibold mb-3 block">Ritual & Heritage</span>
+                <h2 class="font-serif text-4xl md:text-6xl font-bold tracking-wide mb-4">The Luban Range</h2>
+                <p class="text-[var(--text-secondary)] text-sm md:text-base max-w-xl mx-auto font-light leading-relaxed">
+                    Inspired by the sacred tradition of Omani frankincense resin. Pure, calming, and deeply spiritual.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=600&auto=format&fit=crop" alt="Luban Perfume" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#1A1410]/80 text-[var(--accent)] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 01</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Eau de Parfum &bull; 100ml</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Luban Perfume</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">A serene and refined fragrance inspired by the purity of Omani luban. Deeply spiritual and timeless.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$135.00</span>
+                        <button onclick="addToCart('Luban Perfume', 135, 'Luban')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1608248597359-f55c91f53434?q=80&w=600&auto=format&fit=crop" alt="Luban Body Oil" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#1A1410]/80 text-[var(--accent)] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 02</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Body Oil &bull; 100ml</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Luban Body Oil</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Nourishing oil infused with the soothing essence of luban. Leaves skin supple and delicately scented.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$80.00</span>
+                        <button onclick="addToCart('Luban Body Oil', 80, 'Luban')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?q=80&w=600&auto=format&fit=crop" alt="Luban Bakhoor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#1A1410]/80 text-[var(--accent)] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 03</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Bakhoor &bull; 50g</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Luban Bakhoor</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Handcrafted bakhoor that fills your living space with the sacred, earthy aroma of pure luban.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$70.00</span>
+                        <button onclick="addToCart('Luban Bakhoor', 70, 'Luban')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=600&auto=format&fit=crop" alt="Luban Resin" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#1A1410]/80 text-[var(--accent)] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 04</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Resin &bull; 50g</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Luban Resin</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Premium Omani frankincense resin selected for supreme purity and depth. For moments of profound reflection.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$60.00</span>
+                        <button onclick="addToCart('Luban Resin', 60, 'Luban')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gradient Transition Bridge: Luban to Fresh -->
+    <div style="--from-bg: #D9BC9F; --to-bg: #EFE6DA;" class="gradient-bridge"></div>
+
+
+    <section id="fresh" data-theme="fresh" class="themed-section py-28 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#EFE6DA] via-[#E7DEC9] to-[#C5C0B2] pointer-events-none opacity-90"></div>
+        <!-- Dappled leaf shadow overlay -->
+        <div class="absolute inset-0 leaf-shadow opacity-15 pointer-events-none bg-[radial-gradient(circle_at_30%_30%,_#2A3022_0%,_transparent_60%)]"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20">
+                <span class="text-[var(--accent)] tracking-[0.3em] uppercase text-xs font-semibold mb-3 block">Clarity & Energy</span>
+                <h2 class="font-serif text-4xl md:text-6xl font-bold tracking-wide mb-4">The Fresh Range</h2>
+                <p class="text-[var(--text-secondary)] text-sm md:text-base max-w-xl mx-auto font-light leading-relaxed">
+                    A contemporary interpretation of freshness inspired by Omani landscapes. Clean, bright, and effortlessly modern.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=600&auto=format&fit=crop" alt="Fresh Perfume" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#1F211B]/80 text-[#C5C0B2] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 01</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Eau de Parfum &bull; 100ml</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Fresh Perfume</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">A clean and modern fragrance with bright citrus, soft florals and a refined, lasting dry-down.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$120.00</span>
+                        <button onclick="addToCart('Fresh Perfume', 120, 'Fresh')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1608248597359-f55c91f53434?q=80&w=600&auto=format&fit=crop" alt="Fresh Body Oil" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#1F211B]/80 text-[#C5C0B2] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 02</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Body Oil &bull; 100ml</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Fresh Body Oil</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Lightweight aromatic oil that nourishes the skin with a delicate citrus scent. Soft and naturally radiant.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$75.00</span>
+                        <button onclick="addToCart('Fresh Body Oil', 75, 'Fresh')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?q=80&w=600&auto=format&fit=crop" alt="Fresh Bakhoor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#1F211B]/80 text-[#C5C0B2] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 03</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Bakhoor &bull; 50g</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Fresh Bakhoor</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Refined bakhoor with a fresh, calming aroma that purifies your space and uplifts the mood.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$65.00</span>
+                        <button onclick="addToCart('Fresh Bakhoor', 65, 'Fresh')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=600&auto=format&fit=crop" alt="Fresh Luban" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#1F211B]/80 text-[#C5C0B2] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 04</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Resin &bull; 50g</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Fresh Luban</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Pure Omani luban with a clean, fresh aroma for moments of reflection, clarity and connection.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$55.00</span>
+                        <button onclick="addToCart('Fresh Luban', 55, 'Fresh')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gradient Transition Bridge: Fresh to Floral -->
+    <div style="--from-bg: #C5C0B2; --to-bg: #F3DCCB;" class="gradient-bridge"></div>
+
+
+    <section id="floral" data-theme="floral" class="themed-section py-28 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#F3DCCB] via-[#ECAAA2] to-[#E3A58A] pointer-events-none opacity-90"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-rose-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20">
+                <span class="text-[var(--accent)] tracking-[0.3em] uppercase text-xs font-semibold mb-3 block">Expression & Motion</span>
+                <h2 class="font-serif text-4xl md:text-6xl font-bold tracking-wide mb-4">Fruity & Floral Range</h2>
+                <p class="text-[var(--text-secondary)] text-sm md:text-base max-w-xl mx-auto font-light leading-relaxed">
+                    A vibrant and refined collection of lychee, blooming peony, and delicate rose petals in golden sunlight.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=600&auto=format&fit=crop" alt="Floral Perfume" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#2A1714]/80 text-[#F8C9B8] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 01</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Eau de Parfum &bull; 100ml</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">The Expression</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">A modern and elegant fragrance that captures the balance of fruits and florals. Radiant, soft and unforgettable.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$125.00</span>
+                        <button onclick="addToCart('Fruity & Floral Perfume', 125, 'Floral')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1608248597359-f55c91f53434?q=80&w=600&auto=format&fit=crop" alt="Floral Body Oil" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#2A1714]/80 text-[#F8C9B8] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 02</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Body Oil &bull; 100ml</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Floral Body Oil</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Silky, nourishing oil infused with delicate floral and fruity notes. Leaves skin soft and radiant.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$78.00</span>
+                        <button onclick="addToCart('Fruity & Floral Body Oil', 78, 'Floral')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?q=80&w=600&auto=format&fit=crop" alt="Floral Bakhoor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#2A1714]/80 text-[#F8C9B8] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 03</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Bakhoor &bull; 50g</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Floral Bakhoor</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Artisanal bakhoor with a fruity floral accord that fills your room with warmth, elegance and serenity.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$68.00</span>
+                        <button onclick="addToCart('Fruity & Floral Bakhoor', 68, 'Floral')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=600&auto=format&fit=crop" alt="Floral Luban" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-[#2A1714]/80 text-[#F8C9B8] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 04</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Resin &bull; 50g</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Floral Luban</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Pure Omani luban with a soft floral character. A moment of calm beauty and connection.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$58.00</span>
+                        <button onclick="addToCart('Fruity & Floral Luban', 58, 'Floral')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gradient Transition Bridge: Floral to Oud -->
+    <div style="--from-bg: #E3A58A; --to-bg: #2B1C12;" class="gradient-bridge"></div>
+
+
+    <section id="oud" data-theme="oud" class="themed-section py-28 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#2B1C12] via-[#1D120B] to-[#140D08] pointer-events-none"></div>
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-[#C9A25A]/5 rounded-full blur-[160px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20">
+                <span class="text-[var(--accent)] tracking-[0.3em] uppercase text-xs font-semibold mb-3 block">Depth & Presence</span>
+                <h2 class="font-serif text-4xl md:text-6xl font-bold tracking-wide mb-4">The Oud Range</h2>
+                <p class="text-[var(--text-secondary)] text-sm md:text-base max-w-xl mx-auto font-light leading-relaxed">
+                    A dramatic sensory journey across rich oud extrait, aromatic body oils, black-gold marble bakhoor, and rare resins.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=600&auto=format&fit=crop" alt="Oud Perfume" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-black/85 text-[var(--accent)] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 01</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Extrait de Parfum &bull; 100ml</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">The Signature</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">A bold and refined expression of Omani oud. Rich, warm, and enduring with unique black-gold marble finish.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$150.00</span>
+                        <button onclick="addToCart('Oud Perfume', 150, 'Oud')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1608248597359-f55c91f53434?q=80&w=600&auto=format&fit=crop" alt="Oud Body Oil" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-black/85 text-[var(--accent)] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 02</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Body Oil &bull; 100ml</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Oud Body Oil</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">A silky, aromatic oil that lingers on the skin. Deeply nourishing, mysterious and sensorially rich.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$90.00</span>
+                        <button onclick="addToCart('Oud Body Oil', 90, 'Oud')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?q=80&w=600&auto=format&fit=crop" alt="Oud Bakhoor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-black/85 text-[var(--accent)] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 03</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Bakhoor &bull; 50g</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Oud Bakhoor</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Handcrafted bakhoor that fills your sacred space with absolute depth and timeless serenity.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$85.00</span>
+                        <button onclick="addToCart('Oud Bakhoor', 85, 'Oud')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="themed-card p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-72 rounded-t-[5rem] rounded-b-xl mb-6 overflow-hidden relative border border-[var(--border)]">
+                            <img src="https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=600&auto=format&fit=crop" alt="Oud Luban" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95">
+                            <span class="absolute top-4 left-4 bg-black/85 text-[var(--accent)] text-xs px-3 py-1 rounded-full font-serif tracking-widest">Nº 04</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] font-semibold text-[var(--accent)] block mb-1">Resin &bull; 50g</span>
+                        <h3 class="font-serif text-2xl font-bold mb-2">Oud Luban</h3>
+                        <p class="text-[var(--text-secondary)] text-xs font-light mb-6 leading-relaxed">Pure Omani luban paired with aged oud resins for ultimate moments of pause and reflection.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-[var(--border)]">
+                        <span class="text-lg font-serif font-bold">$75.00</span>
+                        <button onclick="addToCart('Oud Luban', 75, 'Oud')" class="themed-btn px-4 py-2 rounded text-[10px] font-semibold uppercase tracking-widest shadow-md">
+                            Add to Bag
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="craft" class="py-28 bg-[#0D0907] border-t border-white/10 text-[#F3E6D3]">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-[#C9A25A] tracking-[0.3em] uppercase text-xs font-semibold mb-2 block">Archival Details</span>
+                <h2 class="font-serif text-3xl md:text-5xl font-bold">Heritage Made Personal</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-[#140D08] border border-[#C9A25A]/20 p-8 rounded-lg text-center">
+                    <span class="font-serif text-[#C9A25A] text-2xl font-bold block mb-3">01</span>
+                    <h3 class="font-serif text-xl mb-2">Arch Detail</h3>
+                    <p class="text-[#BFA88C] text-xs font-light leading-relaxed">Blind embossed arch packaging with tactile depth and golden foil stamping.</p>
+                </div>
+                <div class="bg-[#140D08] border border-[#C9A25A]/20 p-8 rounded-lg text-center">
+                    <span class="font-serif text-[#C9A25A] text-2xl font-bold block mb-3">02</span>
+                    <h3 class="font-serif text-xl mb-2">Sculptural Cap</h3>
+                    <p class="text-[#BFA88C] text-xs font-light leading-relaxed">Natural stone and marble-inspired caps unique to each individual range.</p>
+                </div>
+                <div class="bg-[#140D08] border border-[#C9A25A]/20 p-8 rounded-lg text-center">
+                    <span class="font-serif text-[#C9A25A] text-2xl font-bold block mb-3">03</span>
+                    <h3 class="font-serif text-xl mb-2">Interior Message</h3>
+                    <p class="text-[#BFA88C] text-xs font-light leading-relaxed">Gold and black spot UV text inscribed inside every signature arch.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#140D08] border-l border-[#C9A25A]/20 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-6 border-b border-white/10 flex items-center justify-between">
+            <h3 class="font-serif text-2xl font-bold text-[#F3E6D3] tracking-widest">Shopping Bag</h3>
+            <button onclick="toggleCartDrawer()" class="text-[#BFA88C] hover:text-[#F3E6D3]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <p class="text-[#BFA88C] text-xs text-center py-12">Your shopping bag is currently empty.</p>
+        </div>
+
+        <div class="p-6 border-t border-white/10 bg-[#0A0A0A]">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-sm text-[#BFA88C]">Subtotal</span>
+                <span id="cart-total" class="font-serif text-lg font-bold text-[#F3E6D3]">$0.00</span>
+            </div>
+            <button onclick="checkout()" class="w-full py-4 bg-[#C9A25A] text-black font-semibold uppercase tracking-[0.2em] text-xs hover:bg-[#b58f4a] transition-all rounded-sm">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+    <div id="cart-overlay" onclick="toggleCartDrawer()" class="fixed inset-0 bg-black/70 z-40 hidden backdrop-blur-sm transition-opacity"></div>
+
+
+    <footer class="py-16 px-6 max-w-7xl mx-auto text-center md:text-left flex flex-col md:flex-row justify-between items-center border-t border-white/10 text-[#BFA88C]">
+        <div class="mb-6 md:mb-0">
+            <span class="font-serif text-3xl font-bold tracking-[0.3em] text-[#F3E6D3]">WANI</span>
+            <p class="text-xs mt-2">© 2026 WANI Heritage Made Personal. All rights reserved.</p>
+        </div>
+        <div class="flex space-x-8 text-xs uppercase tracking-widest">
+            <a href="#" class="hover:text-[#C9A25A] transition-colors">Privacy</a>
+            <a href="#" class="hover:text-[#C9A25A] transition-colors">Terms</a>
+            <a href="#" class="hover:text-[#C9A25A] transition-colors">Concierge</a>
+        </div>
+    </footer>
+
+
+    <script>
+        let cart = [];
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-overlay');
+            drawer.classList.toggle('translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function addToCart(name, price, range) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price, range, quantity: 1 });
+            }
+            updateCartUI();
+            toggleCartDrawer();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            const badge = document.getElementById('cart-badge');
+            const totalEl = document.getElementById('cart-total');
+
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            badge.innerText = totalCount;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-[#BFA88C] text-xs text-center py-12">Your shopping bag is currently empty.</p>';
+                totalEl.innerText = '$0.00';
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+
+            cart.forEach((item, index) => {
+                subtotal += item.price * item.quantity;
+                html += `
+                    <div class="flex items-center justify-between bg-[#1E140D] p-4 rounded-lg border border-[#C9A25A]/20">
+                        <div>
+                            <h4 class="font-serif text-base font-bold text-[#F3E6D3]">${item.name}</h4>
+                            <span class="text-[10px] text-[#BFA88C] uppercase tracking-widest">${item.range} Range &bull; Qty: ${item.quantity}</span>
+                            <div class="text-xs font-semibold text-[#C9A25A] mt-1">$${(item.price * item.quantity).toFixed(2)}</div>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-300 text-xs uppercase tracking-wider">Remove</button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            totalEl.innerText = `$${subtotal.toFixed(2)}`;
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Your bag is empty.");
+                return;
+            }
+            alert("Thank you for your order with WANI. Your heritage ritual is being prepared.");
+            cart = [];
+            updateCartUI();
+            toggleCartDrawer();
+        }
+    </script>
+</body>
+</html>
